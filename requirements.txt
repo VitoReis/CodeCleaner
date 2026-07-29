@@ -1,0 +1,7 @@
+llama-index-core                    # Core framework for document loading, indexing, and query processing
+llama-index-readers-file            # File readers for loading documents from various file formats
+llama-index-embeddings-ollama       # Integrates Ollama for generating embeddings
+llama-index-llms-ollama             # Integrates Ollama as the language model
+pypdf                               # PDF parsing and text extraction
+ollama                              # cliente Python do Ollama — usado direto no embed_texts_parallel()
+tqdm                                # barra de progresso dos embeddings (tem fallback, mas sem ela fica sem progresso visível)
