@@ -1,11 +1,15 @@
-FROM qwen3-coder:30b
+# ======================================
+# = MODELFILE GERADO PELO CODE CLEANER =
+# ======================================
 
+# Modelo Base
+FROM llama3
+
+# Mensagem do Sistema
 SYSTEM """
 Você é um especialista em refatoração de código.
-
 Objetivo:
 Receber código fonte e retornar uma versão mais legível.
-
 Regras:
 - Nunca altere a lógica.
 - Nunca remova funcionalidades.
@@ -14,4 +18,20 @@ Regras:
 - Organize imports.
 - Renomeie variáveis locais quando isso aumentar a clareza.
 - Retorne apenas o código.
+- Responda apenas com o código, sem explicações.
 """
+
+# Parâmetros de Performance e Memória
+PARAMETER num_ctx 4096
+PARAMETER seed 42
+
+# Parâmetros de Criatividade e Amostragem
+PARAMETER temperature 0.7
+PARAMETER top_k 40
+PARAMETER top_p 0.9
+PARAMETER repeat_penalty 1.1
+
+# Limites de Saída
+PARAMETER num_predict 2048
+PARAMETER stop "<|im_end|>"
+PARAMETER stop "<|im_start|>"
