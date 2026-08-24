@@ -1,12 +1,24 @@
 import subprocess
 from indexer import load_and_index_documents
-from query_engine import create_query_engine
+from llama_index.llms.ollama import Ollama
+from translations import translate
+
+
+def create_query_engine(index, model_name):
+    if model_name:
+        llm = Ollama(model=model_name, request_timeout=300)
+        retriever = index.as_retriever(similarity_top_k=2)
+        return retriever, llm
 
 
 def send_code(code, model_name):
     index = load_and_index_documents()
-    engine = create_query_engine(index, model_name)
-    reply = engine.query(code)
+    retriever, llm = create_query_engine(index, model_name)
+    nodes = retriever.retrieve(code)
+    context = "\n".join(n.text for n in nodes if n.score and n.score > 0.75)
+    prompt = f"{code}\n\n({translate("best_practice_reference")}:\n{context})"
+    print(context)
+    reply = llm.complete(prompt)
     return str(reply)
 
 

@@ -87,25 +87,21 @@ def create_modelfile_interface(master, show_main_screen):
         parameter_values = {
             name: entry.get() for name, entry in parameter_entries.items()
         }
-        content = textwrap.dedent(f'''
-            FROM {base_model}
-
-            SYSTEM """
-            {system_message}
-            """
-
-            PARAMETER num_ctx {parameter_values["num_ctx"]}
-            PARAMETER seed {parameter_values["seed"]}
-
-            PARAMETER temperature {parameter_values["temperature"]}
-            PARAMETER top_k {parameter_values["top_k"]}
-            PARAMETER top_p {parameter_values["top_p"]}
-            PARAMETER repeat_penalty {parameter_values["repeat_penalty"]}
-
-            PARAMETER num_predict {parameter_values["num_predict"]}
-            PARAMETER stop "<|im_end|>"
-            PARAMETER stop "<|im_start|>"
-        ''')
+        content = (
+            f"FROM {base_model}\n\n"
+            f'SYSTEM """\n'
+            f"{system_message}\n"
+            f'"""\n\n'
+            f'PARAMETER num_ctx {parameter_values["num_ctx"]}\n'
+            f'PARAMETER seed {parameter_values["seed"]}\n\n'
+            f'PARAMETER temperature {parameter_values["temperature"]}\n'
+            f'PARAMETER top_k {parameter_values["top_k"]}\n'
+            f'PARAMETER top_p {parameter_values["top_p"]}\n'
+            f'PARAMETER repeat_penalty {parameter_values["repeat_penalty"]}\n\n'
+            f'PARAMETER num_predict {parameter_values["num_predict"]}\n'
+            f'PARAMETER stop "<|im_end|>"\n'
+            f'PARAMETER stop "<|im_start|>"\n'
+        )
         try:
             with open("Modelfile", "w", encoding="utf-8") as file:
                 file.write(content)
