@@ -16,7 +16,6 @@ Settings.chunk_size = 1024
 Settings.chunk_overlap = 100
 
 embed_model = OllamaEmbedding(model_name=EMBED_MODEL_NAME)
-
 Settings.embed_model = embed_model
 
 MAX_WORKERS = int(os.environ.get("EMBED_MAX_WORKERS", 6))

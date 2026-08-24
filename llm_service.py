@@ -7,7 +7,7 @@ def send_code(code, model_name):
     index = load_and_index_documents()
     engine = create_query_engine(index, model_name)
     reply = engine.query(code)
-    return reply
+    return str(reply)
 
 
 def create_model(model_name):

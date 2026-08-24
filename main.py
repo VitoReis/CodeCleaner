@@ -17,7 +17,11 @@ def change_screen(screen_function):
 
 
 def show_main_screen():
-    change_screen(lambda master: create_main_interface(master, show_modelfile_screen))
+    change_screen(
+        lambda master: create_main_interface(
+            master, show_main_screen, show_modelfile_screen
+        )
+    )
 
 
 def show_modelfile_screen():
