@@ -62,7 +62,7 @@ def create_main_interface(master, show_main_screen, show_modelfile_screen):
     input_box = ctk.CTkTextbox(bottom_frame, height=80)
 
     # OLLAMA MODELS
-    ollama_models = get_ollama_models()
+    ollama_models = sorted(get_ollama_models())
     if not ollama_models:
         ollama_models = [translate("no_ollama_models_found")]
     selected_model = ctk.StringVar(value=ollama_models[0])

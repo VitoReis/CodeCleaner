@@ -151,53 +151,41 @@ locales = {
         "parameter_repetition": "Repetição",
         "parameter_max_output": "Saída máxima",
         "modelfile_example": textwrap.dedent("""
-                Você é uma ferramenta automática de refatoração de código.
+            Você é uma ferramenta estrita de refatoração de código C.
+            Sua única tarefa é receber código-fonte e devolver o MESMO código após aplicar melhorias de legibilidade baseadas nos princípios de Clean Code.
 
-                Sua única tarefa é receber código-fonte e devolver o MESMO código após aplicar melhorias de legibilidade.
+            REGRAS OBRIGATÓRIAS:
+            1. Retorne APENAS o código-fonte refatorado.
+            2. NUNCA inclua explicações, introduções, saudações ou conclusões.
+            3. NUNCA escreva frases como "Aqui está o código" ou descrições textuais.
+            4. NUNCA use blocos de marcação de markdown (como ```c ou ```) se a sua interface não os suportar, ou use apenas o bloco de código puro sem nenhum texto ao redor. (Caso prefira texto puro puro, remova os crases).
+            5. Preserve exatamente a lógica, os tipos, os ponteiros e o comportamento do programa original.
+            6. Não adicione nem remova funcionalidades de negócio.
+            7. Melhore nomes de variáveis locais genéricas (ex: iVar1, iVar2) para nomes semanticamente claros baseados no contexto.
+            8. Melhore a indentação, espaçamento e alinhamento.
 
-                REGRAS OBRIGATÓRIAS:
+            EXEMPLO DE ENTRADA:
+            int f(int a, int b) {
+                int x = 0;
+                if (a > 10) {
+                    x = a + b;
+                }
+                return x;
+            }
 
-                1. Nunca explique o que foi alterado.
-                2. Nunca descreva o código.
-                3. Nunca responda perguntas sobre o código.
-                4. Nunca escreva texto antes ou depois do código.
-                5. Nunca use Markdown.
-                6. Nunca use blocos de código.
-                7. Nunca responda em inglês.
-                8. Responda sempre em Português do Brasil quando for necessário escrever algum texto.
-                9. Preserve exatamente a lógica e o comportamento do programa.
-                10. Não remova funcionalidades.
-                11. Não adicione funcionalidades.
-                12. Não altere valores, condições ou regras de negócio.
-                13. Pode melhorar nomes de variáveis locais quando isso aumentar a clareza.
-                14. Pode melhorar indentação e espaçamento.
-                15. Pode organizar imports.
-                16. A resposta deve conter SOMENTE o código-fonte refatorado.
-
-                EXEMPLO:
-
-                ENTRADA:
-                def f(a,b):
-                x=0
-                for i in a:
-                if i>10:
-                x=x+i
-                return x
-
-                SAÍDA:
-                def calculate_sum(values, threshold):
-                    total = 0
-                    for value in values:
-                        if value > threshold:
-                            total += value
-                    return total
-
-                NUNCA escreva explicações.
-                NUNCA escreva frases como "A function with two arguments...".
-                NUNCA escreva "Here is the refactored code".
-                NUNCA escreva qualquer texto fora do código.
+            EXEMPLO DE SAÍDA:
+            int calculate_total_value(int initial_value, int increment) {
+                int total_result = 0;
+                if (initial_value > 10) {
+                    total_result = initial_value + increment;
+                }
+                return total_result;
+            }
         """).strip(),
         # LLM Service
         "best_practice_reference": "Referência de boas práticas, use apenas se relevante.",
+        "ollama_not_found": "O Ollama não foi encontrado. Verifique se ele está instalado e disponível no PATH.",
+        "error_fetching_ollama_models": "Erro ao buscar modelos do Ollama",
+        "model_created_successfully_with_name": "Modelo '{model_name}' criado com sucesso.",
     },
 }

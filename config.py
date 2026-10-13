@@ -10,7 +10,6 @@ DATA_DIR = "data"
 PERSIST_DIR = "./storage"
 
 EMBED_MODEL_NAME = "nomic-embed-text"
-LLM_MODEL_NAME = "llama3:latest"
 
 Settings.chunk_size = 1024
 Settings.chunk_overlap = 100

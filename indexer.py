@@ -54,13 +54,6 @@ def create_nodes(documents):
     return nodes
 
 
-def generate_embeddings(nodes):
-    texts = [n.get_content() for n in nodes]
-    embeddings = embed_texts_parallel(texts)
-    for node, embedding in zip(nodes, embeddings):
-        node.embedding = embedding
-
-
 def build_index(nodes):
     index = VectorStoreIndex(
         nodes,
@@ -79,7 +72,10 @@ def load_and_index_documents(data_dir=DATA_DIR):
         return load_existing_index()
     docs = read_documents(data_dir)
     nodes = create_nodes(docs)
-    generate_embeddings(nodes)
-    index = build_index(nodes)
+    index = VectorStoreIndex(
+        nodes,
+        embed_model=embed_model,
+        show_progress=True,
+    )
     save_index(index)
     return index

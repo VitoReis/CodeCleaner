@@ -15,7 +15,11 @@ def send_code(code, model_name):
     index = load_and_index_documents()
     retriever, llm = create_query_engine(index, model_name)
     nodes = retriever.retrieve(code)
-    context = "\n".join(n.text for n in nodes if n.score and n.score > 0.75)
+    print(f"Nodes found: {len(nodes)}")
+    for i, n in enumerate(nodes):
+        print(f"--- Node {i} (Score: {n.score}) ---")
+        print(n.text[:200])
+    context = "\n".join(n.text for n in nodes)
     prompt = f"{code}\n\n({translate("best_practice_reference")}:\n{context})"
     print(context)
     reply = llm.complete(prompt)
@@ -33,14 +37,17 @@ def create_model(model_name):
         )
         return {
             "success": True,
-            "message": result.stdout or "Modelo criado com sucesso.",
+            "message": result.stdout
+            or translate("model_created_successfully_with_name").format(
+                model_name=model_name
+            ),
         }
     except subprocess.CalledProcessError as error:
         return {"success": False, "message": error.stderr or str(error)}
     except FileNotFoundError:
         return {
             "success": False,
-            "message": "O Ollama não foi encontrado. Verifique se ele está instalado e disponível no PATH.",
+            "message": translate("ollama_not_found"),
         }
 
 
@@ -62,5 +69,5 @@ def get_ollama_models():
                 models.append(parts[0])
         return models
     except Exception as error:
-        print(f"Erro ao buscar modelos do Ollama: {error}")
+        print(f"{translate("error_fetching_ollama_models")}: {error}")
         return []
