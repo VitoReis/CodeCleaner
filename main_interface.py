@@ -2,6 +2,7 @@ import customtkinter as ctk
 import threading
 
 from llm_service import send_code, get_ollama_models
+from sound_feedback import play_tone
 from translations import (
     get_available_languages,
     get_current_language,
@@ -65,6 +66,7 @@ def create_main_interface(master, show_main_screen, show_modelfile_screen):
     ollama_models = sorted(get_ollama_models())
     if not ollama_models:
         ollama_models = [translate("no_ollama_models_found")]
+        play_tone("error")
     selected_model = ctk.StringVar(value=ollama_models[0])
     model_dropdown = ctk.CTkOptionMenu(
         bottom_frame, values=ollama_models, variable=selected_model, width=160
@@ -152,8 +154,10 @@ def create_main_interface(master, show_main_screen, show_modelfile_screen):
     def worker(code, model_name):
         try:
             reply = send_code(code, model_name)
+            play_tone("coin")
             frame.after(0, lambda: finish_request(reply))
         except Exception as error:
+            play_tone("error")
             error_message = str(error)
             frame.after(
                 0,
@@ -169,6 +173,7 @@ def create_main_interface(master, show_main_screen, show_modelfile_screen):
         model_name = selected_model.get()
         if model_name == translate("no_ollama_models_found"):
             insert_chatbox(translate("no_ollama_models_found"), "assistant")
+            play_tone("error")
             return
         insert_chatbox(code, "user")
         input_box.delete("1.0", "end")

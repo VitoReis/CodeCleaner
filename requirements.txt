@@ -4,5 +4,4 @@ llama-index-embeddings-ollama       # Integrates Ollama for generating embedding
 llama-index-llms-ollama             # Integrates Ollama as the language model
 pypdf                               # PDF parsing and text extraction
 ollama                              # Ollama Python Client
-tqdm                                # Embeddings progress bar
 customtkinter                       # Interface

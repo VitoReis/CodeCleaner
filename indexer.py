@@ -1,3 +1,4 @@
+import json
 import math
 import os
 import statistics
@@ -14,10 +15,14 @@ from llama_index.core.node_parser import TokenTextSplitter
 
 from config import (
     DATA_DIR,
+    EMBED_MODEL_NAME,
+    EMBED_QUERY_INSTRUCTION,
+    EMBED_TEXT_INSTRUCTION,
     PERSIST_DIR,
     embed_model,
 )
-from embeddings import embed_texts_parallel
+
+INDEX_CONFIG_PATH = Path(PERSIST_DIR) / "index_config.json"
 
 
 def load_existing_index():
@@ -67,15 +72,44 @@ def save_index(index):
     index.storage_context.persist(persist_dir=PERSIST_DIR)
 
 
+def index_config(data_dir):
+    data_path = Path(data_dir)
+    return {
+        "schema_version": 1,
+        "data_dir": str(data_path.resolve()),
+        "source_files": [
+            {
+                "path": str(path.relative_to(data_path)),
+                "size": path.stat().st_size,
+                "modified_ns": path.stat().st_mtime_ns,
+            }
+            for path in sorted(data_path.rglob("*"))
+            if path.is_file()
+        ],
+        "embedding_model": EMBED_MODEL_NAME,
+        "text_instruction": EMBED_TEXT_INSTRUCTION,
+        "query_instruction": EMBED_QUERY_INSTRUCTION,
+        "chunk_size": Settings.chunk_size,
+        "chunk_overlap": Settings.chunk_overlap,
+    }
+
+
 def load_and_index_documents(data_dir=DATA_DIR):
-    if Path(PERSIST_DIR).exists():
-        return load_existing_index()
+    expected_config = index_config(data_dir)
+    if Path(PERSIST_DIR).exists() and INDEX_CONFIG_PATH.exists():
+        stored_config = json.loads(INDEX_CONFIG_PATH.read_text(encoding="utf-8"))
+        if stored_config == expected_config:
+            return load_existing_index()
+        print("Embedding configuration changed; rebuilding the persisted index.")
+    elif Path(PERSIST_DIR).exists():
+        print("Persisted index has no configuration metadata; rebuilding it.")
+
     docs = read_documents(data_dir)
     nodes = create_nodes(docs)
-    index = VectorStoreIndex(
-        nodes,
-        embed_model=embed_model,
-        show_progress=True,
-    )
+    index = build_index(nodes)
     save_index(index)
+    INDEX_CONFIG_PATH.write_text(
+        json.dumps(expected_config, indent=2),
+        encoding="utf-8",
+    )
     return index

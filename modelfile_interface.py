@@ -3,6 +3,7 @@ import textwrap
 import customtkinter as ctk
 
 from llm_service import create_model
+from sound_feedback import play_tone
 from translations import translate
 
 
@@ -83,6 +84,7 @@ def create_modelfile_interface(master, show_main_screen):
         system_message = system_textbox.get("1.0", "end").strip()
         if not base_model:
             status_label.configure(text=translate("base_model_required"))
+            play_tone("error")
             return
         parameter_values = {
             name: entry.get() for name, entry in parameter_entries.items()
@@ -110,18 +112,21 @@ def create_modelfile_interface(master, show_main_screen):
             frame.update_idletasks()
             response = create_model(new_model_name)
             if response["success"]:
+                play_tone("ready")
                 status_label.configure(
                     text=translate(f"model_created_successfully_with_name").format(
                         model_name=new_model_name
                     )
                 )
             else:
+                play_tone("error")
                 status_label.configure(
                     text=translate("error_creating_model").format(
                         message=response["message"]
                     )
                 )
         except Exception as error:
+            play_tone("error")
             status_label.configure(
                 text=translate("error_creating_modelfile").format(error=error)
             )

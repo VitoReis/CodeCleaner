@@ -1,12 +1,17 @@
 import subprocess
 from indexer import load_and_index_documents
 from llama_index.llms.ollama import Ollama
+from ollama import AsyncClient, Client
 from translations import translate
 
 
 def create_query_engine(index, model_name):
     if model_name:
-        llm = Ollama(model=model_name, request_timeout=300)
+        llm = Ollama(
+            model=model_name,
+            client=Client(timeout=None),
+            async_client=AsyncClient(timeout=None),
+        )
         retriever = index.as_retriever(similarity_top_k=2)
         return retriever, llm
 
